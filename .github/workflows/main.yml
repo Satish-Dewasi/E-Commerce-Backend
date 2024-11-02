@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # Change this to your branch name if necessary
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.x' # Specify your Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      # - name: Run tests
+      #   run: npm test # Run your tests (if you have any)
+
+      # - name: Build project
+      #   run: npm run build # If applicable, run your build script
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Render
+        run: |
+          curl -X POST https://api.render.com/deploy/srv-csh4lrbtq21c73e3fmo0?key=m35Z46sxJew \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
