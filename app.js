@@ -23,7 +23,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://e-commerce-frontend-wdug.onrender.com",
+];
 
 app.use(
   cors((req, callback) => {
