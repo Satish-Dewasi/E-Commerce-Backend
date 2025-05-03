@@ -135,3 +135,22 @@ export const refreshTokenEndpoint = async (req, res) => {
     }
   );
 };
+
+// get all the user ADMIN route
+
+export const getAllUserController = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      success: true,
+      message: "users fetched successfully",
+      users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
