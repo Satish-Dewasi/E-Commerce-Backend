@@ -48,6 +48,7 @@ export const loginController = catchAsyncErrors(async (req, res, next) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "None",
   };
 
   res.status(200).cookie("refreshToken", refreshToken, options).json({
