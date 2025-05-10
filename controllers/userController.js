@@ -11,9 +11,6 @@ export const registerController = catchAsyncErrors(async (req, res, next) => {
 
   const user = await User.create({ name, email, password });
 
-  // getting jwt token
-  //sendToken(res, user._id);
-
   res.status(201).json({
     success: true,
     message: "user registered successfully",
@@ -62,7 +59,7 @@ export const loginController = catchAsyncErrors(async (req, res, next) => {
 
 // logout user
 export const logoutController = catchAsyncErrors(async (req, res, next) => {
-  res.cookie("token", null, {
+  res.cookie("refreshToken", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
   });
@@ -76,11 +73,6 @@ export const logoutController = catchAsyncErrors(async (req, res, next) => {
 // get user profile /me
 
 export const userProfile = catchAsyncErrors(async (req, res, next) => {
-  //const id = req?.user?._id;
-  //console.log("req.user" + req.user);
-
-  //const user = await User.findById(id);
-
   const user = req.user;
 
   if (!user) {
