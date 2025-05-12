@@ -4,6 +4,7 @@ import errorMiddlware from "./middlewares/error.js";
 import { connectDatabase } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -57,6 +58,9 @@ app.use("/api/v1", userRoutes);
 
 // product routes
 app.use("/api/v1", productRoutes);
+
+// order Routes
+app.use("/api/v1", orderRoutes);
 
 // using error middleware
 app.use(errorMiddlware);
