@@ -2,9 +2,12 @@ import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET);
 
 export const checkoutController = catchAsyncErrors(async (req, res) => {
+  //console.log(process.env.STRIPE_SECRET);
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET);
+
   const { cartItems, userId } = req.body;
 
   // console.log(cartItems);
