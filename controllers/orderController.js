@@ -2,6 +2,7 @@ import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import Stripe from "stripe";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 export const checkoutController = catchAsyncErrors(async (req, res) => {
   //console.log(process.env.STRIPE_SECRET);
@@ -51,5 +52,27 @@ export const checkoutController = catchAsyncErrors(async (req, res) => {
     res.send({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+// Payment update controller
+
+export const updatePaymentStatus = catchAsyncErrors(async (req, res) => {
+  const { paymentIntentId, status } = req.body;
+
+  try {
+    const order = await Order.findById({ paymentIntentId });
+    if (!order) {
+      return next(new ErrorHandler("product not found", 404));
+    }
+
+    order.paymentStatus = status;
+
+    await order.save();
+
+    res.status(200).json({ message: "Payment status updated successfully" });
+  } catch (error) {
+    console.error("Update Payment Status Error:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
