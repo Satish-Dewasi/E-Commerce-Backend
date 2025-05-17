@@ -7,7 +7,9 @@ import { isAuthenticated } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.route("/orders/checkouts").post(checkoutController);
-router.route("/orders/payment-update").post(updatePaymentStatus);
+router.route("/orders/checkouts").post(isAuthenticated, checkoutController);
+router
+  .route("/orders/payment-update")
+  .post(isAuthenticated, updatePaymentStatus);
 
 export default router;

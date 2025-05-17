@@ -60,8 +60,11 @@ export const checkoutController = catchAsyncErrors(async (req, res) => {
 export const updatePaymentStatus = catchAsyncErrors(async (req, res) => {
   const { paymentIntentId, status } = req.body;
 
+  console.log(paymentIntentId);
+  console.log(status);
+
   try {
-    const order = await Order.findById({ paymentIntentId });
+    const order = await Order.findOne({ paymentIntentId });
     if (!order) {
       return next(new ErrorHandler("product not found", 404));
     }
