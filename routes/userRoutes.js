@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.route("/register").post(registerController);
 router.route("/login").post(loginController);
-router.route("/logout").get(logoutController);
 router.route("/refresh-token").post(refreshTokenEndpoint);
+router.route("/logout").get(isAuthenticated, logoutController);
 router.route("/profile").get(isAuthenticated, userProfile);
 
 // admin routes
