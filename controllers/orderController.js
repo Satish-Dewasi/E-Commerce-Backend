@@ -5,15 +5,9 @@ import Stripe from "stripe";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 export const checkoutController = catchAsyncErrors(async (req, res) => {
-  //console.log(process.env.STRIPE_SECRET);
-
   const stripe = new Stripe(process.env.STRIPE_SECRET);
 
   const { cartItems, userId } = req.body;
-
-  // console.log(cartItems);
-  // console.log(userId);
-
   try {
     let totalAmount = 0;
 
@@ -59,9 +53,6 @@ export const checkoutController = catchAsyncErrors(async (req, res) => {
 
 export const updatePaymentStatus = catchAsyncErrors(async (req, res) => {
   const { paymentIntentId, status } = req.body;
-
-  console.log(paymentIntentId);
-  console.log(status);
 
   try {
     const order = await Order.findOne({ paymentIntentId });
