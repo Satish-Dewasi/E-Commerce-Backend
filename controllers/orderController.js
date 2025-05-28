@@ -70,3 +70,11 @@ export const updatePaymentStatus = catchAsyncErrors(async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+export const getAllOrders = catchAsyncErrors(async (req, res) => {
+  const orders = await Order.find()
+    .populate("user", "name")
+    .sort({ createdAt: -1 });
+
+  return res.status(200).json({ orders });
+});
