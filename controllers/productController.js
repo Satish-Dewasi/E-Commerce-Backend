@@ -22,22 +22,29 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// get all products /products
+// GET /products?keyword=red&category=shoes&minPrice=500&maxPrice=1000&pageNumber=1
+
 export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const {
+    keyword = "",
     category,
-    minPrice,
-    maxPrice,
+    minPrice = 0,
+    maxPrice = 1000000,
     pageNumber = 1,
     resultPerPage = 12,
   } = req.query;
 
-  let query = {
+  const query = {
     price: {
-      $gte: parseFloat(minPrice) || 0,
-      $lte: parseFloat(maxPrice) || 1000,
+      $gte: parseFloat(minPrice),
+      $lte: parseFloat(maxPrice),
     },
   };
+
+  if (keyword.trim()) {
+    query.name = { $regex: keyword.trim(), $options: "i" };
+  }
+
   if (category) {
     query.category = category;
   }
@@ -49,12 +56,12 @@ export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
     .skip(skip)
     .lean();
 
-  const totalProducts = await Product.countDocuments();
+  const totalProducts = await Product.countDocuments(query);
 
   res.status(200).json({
     success: true,
-    message: "product fatched successfully",
-    totalProducts: totalProducts,
+    message: "Products fetched successfully",
+    totalProducts,
     pageNumber,
     products,
   });
@@ -112,9 +119,6 @@ export const getSingleProductsByCategory = catchAsyncErrors(
   async (req, res, next) => {
     const { category, productId } = req.params;
 
-    //console.log(category);
-    //console.log(productId);
-
     //validate product id
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return next(new ErrorHandler("Invalid product ID format", 400));
@@ -136,7 +140,6 @@ export const getSingleProductsByCategory = catchAsyncErrors(
 );
 
 // search product    /products/search?.....
-
 export const searchProduct = catchAsyncErrors(async (req, res, next) => {
   try {
     const { keyword } = req.query;
@@ -181,3 +184,30 @@ export const getRandomProducts = catchAsyncErrors(async (req, res, next) => {
     products: randomProducts,
   });
 });
+
+// get Category and stock of products   /getCategoriesWithStock
+
+export const getCategoriesWithProductCount = catchAsyncErrors(
+  async (req, res) => {
+    const result = await Product.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      categories: result,
+    });
+  }
+);

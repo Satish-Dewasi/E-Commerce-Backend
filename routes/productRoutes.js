@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllProducts,
+  getCategoriesWithProductCount,
   getProductsByCategory,
   getProductsById,
   getRandomProducts,
@@ -29,5 +30,10 @@ router
 
 // Get single product by product ID (most generic dynamic route)
 router.route("/products/:productId").get(getProductsById);
+
+// Get all the categoty with stocks
+router
+  .route("/getCategoriesWithProductCount")
+  .get(getCategoriesWithProductCount);
 
 export default router;
